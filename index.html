@@ -322,6 +322,48 @@
   }
   .rv-icon-btn:hover { opacity: 0.65; }
 
+  /* ---------- Full-screen report (frame "Chat - new - opened report - full screen") ---------- */
+  .fs-view {
+    position: fixed;
+    inset: 0 0 0 48px;
+    z-index: 260;
+    display: none;
+    background: #FFFFFF;
+    overflow: hidden;
+  }
+  body.fs .fs-view { display: block; animation: overlayIn 0.2s ease; }
+  .fs-topbar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 48px;
+    display: flex; align-items: center;
+    gap: 8px;
+    padding-left: 12px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E6E6E6;
+    z-index: 2;
+  }
+  .fs-panel-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 6px; flex-shrink: 0; }
+  .fs-back {
+    display: flex; align-items: center;
+    gap: 10px;
+    background: none; border: none;
+    font-family: system-ui, sans-serif;
+    font-size: 14px; line-height: 20px;
+    color: #171717;
+    cursor: pointer;
+  }
+  .fs-back:hover svg { opacity: 0.6; }
+  .fs-scale {
+    position: absolute;
+    left: var(--rv-x, 0); top: 48px;
+    width: 1392px; height: 952px;
+    transform-origin: 0 0;
+    transform: scale(var(--rv-scale, 1));
+  }
+  .fs-report { position: absolute; left: 74px; top: 25px; width: 874px; }
+  .fs-sidebar { position: absolute; left: 980px; top: 25px; width: 338px; }
+
   /* ---------- Text Agent screen (ported verbatim from agent-list-view) ---------- */
   @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
   /* ---------- Text Agent screen (created agent page) ---------- */
@@ -733,7 +775,7 @@
         </svg>
         Create Agent
       </button>
-      <button class="rv-icon-btn" title="Expand">
+      <button class="rv-icon-btn" id="reportExpand" title="Expand">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32">
           <path d="M22.6 16 24 16 24 8 16 8 16 9.4 22.6 9.4 22.6 16z" fill="#9AA3B5"/>
           <path d="M8 24 16 24 16 22.6 9.4 22.6 9.4 16 8 16 8 24z" fill="#9AA3B5"/>
@@ -747,6 +789,27 @@
       </button>
     </div>
   </div>
+  </div>
+</div>
+
+<div class="fs-view">
+  <div class="fs-topbar">
+    <div class="fs-panel-icon">
+      <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <rect x="1" y="1.5" width="14" height="13" rx="2.5" fill="none" stroke="#666666"/>
+        <path d="M5.6 1.5 L5.6 14.5" fill="none" stroke="#666666"/>
+      </svg>
+    </div>
+    <button class="fs-back" id="fsBack">
+      <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9.9 3.2 L5.3 8 L9.9 12.8" fill="none" stroke="#171717" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Chat / Live Apps Usage Momentum Report
+    </button>
+  </div>
+  <div class="fs-scale">
+    <img class="fs-report" src="fs-report-card.png" alt="Live Apps Usage Momentum report, full screen" width="874" height="4834" />
+    <img class="fs-sidebar" src="fs-sidebar-card.png" alt="Woomi's Data Aggregator" width="338" height="204" />
   </div>
 </div>
 
@@ -945,9 +1008,19 @@
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
     if (document.body.classList.contains('agent')) { closeAgentView(); return; }
+    if (document.body.classList.contains('fs')) { closeFs(); return; }
     if (document.body.classList.contains('report')) { closeReport(); return; }
     artifactCard.classList.remove('popover-open');
   });
+
+  // Expand -> full-screen report (frame "Chat - new - opened report - full screen");
+  // the split view stays open beneath so back returns to it.
+  function closeFs() { document.body.classList.remove('fs'); }
+  document.getElementById('reportExpand').addEventListener('click', function () {
+    sizeReport();
+    document.body.classList.add('fs');
+  });
+  document.getElementById('fsBack').addEventListener('click', closeFs);
 
   // Open Report -> split view with the report panel (frame "Chat - new - opened report")
   // The frame is a 50/50 split of a 1440 screen: scale the 1392-wide content
