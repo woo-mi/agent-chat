@@ -294,14 +294,14 @@
   }
   .rv-panel {
     position: relative;
-    width: calc(var(--rv-kt, 1) * 727px);
+    width: calc(var(--rv-kr, 0.9) * 727px); /* report content at 90% of the ratio scale */
     margin: 0 auto;
   }
   .rv-panel img { display: block; width: 100%; height: auto; }
   .rv-controls {
     position: absolute;
-    left: calc(var(--rv-kt, 1) * 487px); top: calc(var(--rv-kt, 1) * 18px);
-    transform: scale(var(--rv-kt, 1));
+    left: calc(var(--rv-kr, 0.9) * 487px); top: calc(var(--rv-kr, 0.9) * 18px);
+    transform: scale(var(--rv-kr, 0.9));
     transform-origin: 0 0;
     display: flex; align-items: center;
     gap: 8px;
@@ -1054,6 +1054,7 @@
     root.setProperty('--rv-scale', k);
     root.setProperty('--rv-x', x + 'px');
     root.setProperty('--rv-kt', k);
+    root.setProperty('--rv-kr', k * 0.9);
     root.setProperty('--rv-splitx', splitView + 'px');
     root.setProperty('--rvt-x', tx + 'px');
     root.setProperty('--rv-divider', splitView + 'px');
