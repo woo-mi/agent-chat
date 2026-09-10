@@ -244,8 +244,16 @@
     inset: 48px 0 0 48px;
     z-index: 250;
     display: none;
-    background: #FFFFFF;
+    background: #FAFAFA; /* the panel's baked page gray, continued to the right edge */
     overflow: hidden;
+  }
+  .report-view::before {
+    /* white chat side, continued from the left edge up to the split line */
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: var(--rv-divider, 50%);
+    background: #FFFFFF;
   }
   body.report .report-view { display: block; animation: overlayIn 0.2s ease; }
   /* The frame is a 1440x1000 mock with a 50/50 split; the 1392x952 content region
@@ -937,8 +945,11 @@
     // margins -- that is what the mock's ratio looks like on a wider screen.
     var w = window.innerWidth - 48, h = window.innerHeight - 48;
     var k = Math.min(w / 1392, h / 952);
+    var x = Math.max(0, (w - 1392 * k) / 2);
     reportView.style.setProperty('--rv-scale', k);
-    reportView.style.setProperty('--rv-x', Math.max(0, (w - 1392 * k) / 2) + 'px');
+    reportView.style.setProperty('--rv-x', x + 'px');
+    // split line: white chat side ends where the panel (at 664 in mock coords) begins
+    reportView.style.setProperty('--rv-divider', (x + 664 * k) + 'px');
   }
   sizeReport();
   window.addEventListener('resize', sizeReport);
