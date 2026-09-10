@@ -248,17 +248,23 @@
     overflow: hidden;
   }
   body.report .report-view { display: block; animation: overlayIn 0.2s ease; }
+  /* The frame is a 50/50 split at 1440; the whole 1392x952 content region scales
+     with the window width (JS sets --rv-scale) so the mock's proportions hold. */
+  .rv-scale {
+    position: absolute;
+    left: 0; top: 0;
+    width: 1392px; height: 952px;
+    transform-origin: 0 0;
+    transform: scale(var(--rv-scale, 1));
+  }
   .rv-thread {
     position: absolute;
-    /* center in the space left of the 728px panel; max() clamps to the frame's
-       exact -1px at 1440 and narrower so the 1440 crop stays pixel-true */
-    left: max(-1px, calc(50% - 702.5px));
-    top: -2478px; /* frame: Landing Column at 47/-2430, viewport top bar 48 */
+    left: -1px; top: -2478px; /* frame: Landing Column at 47/-2430, viewport top bar 48 */
     width: 677px;
   }
   .rv-panel {
     position: absolute;
-    right: 0; top: 0;
+    left: 664px; top: 0; /* frame: panel at 712/48 -> half the 1440 screen */
     width: 728px; height: 952px;
   }
   .rv-panel img { display: block; width: 728px; height: 952px; }
@@ -691,6 +697,7 @@
 </div>
 
 <div class="report-view">
+  <div class="rv-scale">
   <img class="rv-thread" src="report-left-thread.png" alt="Chat conversation (compressed)" width="677" height="3516" />
   <div class="rv-panel">
     <img src="report-panel-open.png" alt="Live Apps Usage Momentum report" width="728" height="952" />
@@ -716,6 +723,7 @@
         </svg>
       </button>
     </div>
+  </div>
   </div>
 </div>
 
@@ -919,10 +927,19 @@
   });
 
   // Open Report -> split view with the report panel (frame "Chat - new - opened report")
+  // The frame is a 50/50 split of a 1440 screen: scale the 1392-wide content
+  // region to the window so the mock's half-and-half proportions hold.
+  var reportView = document.querySelector('.report-view');
+  function sizeReport() {
+    reportView.style.setProperty('--rv-scale', (window.innerWidth - 48) / 1392);
+  }
+  sizeReport();
+  window.addEventListener('resize', sizeReport);
   function closeReport() { document.body.classList.remove('report'); }
   document.getElementById('btnOpenReport').addEventListener('click', function (e) {
     e.stopPropagation();
     artifactCard.classList.remove('popover-open');
+    sizeReport();
     document.body.classList.add('report');
   });
   document.getElementById('reportClose').addEventListener('click', closeReport);
