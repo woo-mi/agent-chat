@@ -268,12 +268,12 @@
   }
   .rv-thread {
     position: absolute;
-    left: -1px; top: -2478px; /* frame: Landing Column at 47/-2430, viewport top bar 48 */
+    left: var(--rv-thread-left, -1px); top: -2478px; /* frame: Landing Column at 47/-2430, viewport top bar 48; JS centers it in the white chat side */
     width: 677px;
   }
   .rv-panel {
     position: absolute;
-    left: 664px; top: 0; /* frame: panel at 712/48 -> half the 1440 screen */
+    left: var(--rv-panel-left, 664px); top: 0; /* frame: 664 = half the 1440 screen; JS shifts right by half the leftover width */
     width: 728px; height: 952px;
   }
   .rv-panel img { display: block; width: 728px; height: 952px; }
@@ -946,10 +946,16 @@
     var w = window.innerWidth - 48, h = window.innerHeight - 48;
     var k = Math.min(w / 1392, h / 952);
     var x = Math.max(0, (w - 1392 * k) / 2);
+    // dock the panel to the right edge (its baked border marks the split line),
+    // then center the chat thread in the white region that remains
+    var panelLeft = 664 + x / k; // mock coords; at x=0 this is the frame's 664
+    var divider = x + panelLeft * k;
+    var threadLeft = Math.max(-1, (divider - 677 * k) / 2 / k - x / k);
     reportView.style.setProperty('--rv-scale', k);
     reportView.style.setProperty('--rv-x', x + 'px');
-    // split line: white chat side ends where the panel (at 664 in mock coords) begins
-    reportView.style.setProperty('--rv-divider', (x + 664 * k) + 'px');
+    reportView.style.setProperty('--rv-panel-left', panelLeft + 'px');
+    reportView.style.setProperty('--rv-thread-left', threadLeft + 'px');
+    reportView.style.setProperty('--rv-divider', divider + 'px');
   }
   sizeReport();
   window.addEventListener('resize', sizeReport);
