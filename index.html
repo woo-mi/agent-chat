@@ -257,6 +257,19 @@
     background: #FFFFFF;
   }
   body.report .report-view { display: block; animation: overlayIn 0.2s ease; }
+  /* frame "Report slide in": the panel enters from the right edge */
+  body.report .rv-panel { animation: panelSlideIn 0.38s cubic-bezier(0.32, 0.72, 0.28, 1) both; }
+  @keyframes panelSlideIn {
+    from { transform: translateX(calc(100% + 80px)); }
+    to { transform: translateX(0); }
+  }
+  body.report.report-closing .report-view { animation: overlayOut 0.3s ease both; }
+  @keyframes overlayOut { to { opacity: 0; } }
+  body.report.report-closing .rv-panel { animation: panelSlideOut 0.3s cubic-bezier(0.4, 0, 0.6, 1) both; }
+  @keyframes panelSlideOut {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(100% + 80px)); }
+  }
   /* The frame is a 1440x1000 mock with a 50/50 split; the 1392x952 content region
      scales to FIT the window (contain, both dimensions — JS sets --rv-scale/--rv-x)
      so the mock's exact crop and ratio hold at any window size. */
@@ -960,10 +973,20 @@
   }
   sizeReport();
   window.addEventListener('resize', sizeReport);
-  function closeReport() { document.body.classList.remove('report'); }
+  var reportCloseTimer = null;
+  function closeReport() {
+    if (!document.body.classList.contains('report') || reportCloseTimer) return;
+    document.body.classList.add('report-closing');
+    reportCloseTimer = setTimeout(function () {
+      document.body.classList.remove('report', 'report-closing');
+      reportCloseTimer = null;
+    }, 310);
+  }
   document.getElementById('btnOpenReport').addEventListener('click', function (e) {
     e.stopPropagation();
     artifactCard.classList.remove('popover-open');
+    if (reportCloseTimer) { clearTimeout(reportCloseTimer); reportCloseTimer = null; }
+    document.body.classList.remove('report-closing');
     sizeReport();
     document.body.classList.add('report');
   });
