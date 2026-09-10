@@ -932,10 +932,13 @@
   // region to the window so the mock's half-and-half proportions hold.
   var reportView = document.querySelector('.report-view');
   function sizeReport() {
-    // Fill the full width, keeping the mock's 50/50 split; on shorter windows the
-    // bottom continues below the fold (like real content), never side margins.
-    reportView.style.setProperty('--rv-scale', (window.innerWidth - 48) / 1392);
-    reportView.style.setProperty('--rv-x', '0px');
+    // Keep the mock's ratio: scale the 1392x952 region to fit the window on both
+    // axes (contain). On wider-aspect windows the leftover width becomes side
+    // margins -- that is what the mock's ratio looks like on a wider screen.
+    var w = window.innerWidth - 48, h = window.innerHeight - 48;
+    var k = Math.min(w / 1392, h / 952);
+    reportView.style.setProperty('--rv-scale', k);
+    reportView.style.setProperty('--rv-x', Math.max(0, (w - 1392 * k) / 2) + 'px');
   }
   sizeReport();
   window.addEventListener('resize', sizeReport);
