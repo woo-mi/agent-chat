@@ -141,6 +141,41 @@
   }
   .btn-open-report:hover { background: #6F7AF5; }
 
+  /* ---------- "Choose how to build" popover (Chat - new - clicked) ---------- */
+  .build-popover {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 0;
+    width: 558px;
+    padding: 16px;
+    border-radius: 12px;
+    background: #FFFFFF;
+    box-shadow: 0 4px 16px rgba(16, 24, 40, 0.12), 0 1px 3px rgba(16, 24, 40, 0.08), 0 0 0 1px rgba(16, 24, 40, 0.05);
+    display: none;
+    z-index: 20;
+  }
+  .artifact-card.popover-open .build-popover { display: block; }
+  .bp-title { font-size: 15px; font-weight: 600; line-height: 20px; color: #171717; margin-bottom: 12px; }
+  .bp-cards { display: flex; gap: 8px; }
+  .bp-card {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    column-gap: 8px;
+    align-items: start;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #E3E3E3;
+    background: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.12s ease;
+  }
+  .bp-card:hover { background: #FAFAFA; }
+  .bp-card.selected { border: 1.5px solid #171717; padding: 9.5px 11.5px; }
+  .bp-card svg { margin-top: 1px; }
+  .bp-card-title { font-size: 14px; font-weight: 600; line-height: 18px; color: #171717; }
+  .bp-card-sub { grid-column: 2; font-size: 12.5px; line-height: 16px; color: #666666; margin-top: 2px; }
+
   /* ---------- Bottom fade + composer ---------- */
   .conv-fade {
     position: fixed;
@@ -301,7 +336,29 @@
 <div class="stage">
   <div class="thread">
     <img src="chat-thread.png" alt="Chat conversation" width="768" height="3224" />
-    <div class="artifact-card">
+    <div class="artifact-card" id="artifactCard">
+      <div class="build-popover" id="buildPopover">
+        <div class="bp-title">Choose how to build</div>
+        <div class="bp-cards">
+          <div class="bp-card selected">
+            <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" fill="none" stroke="#171717" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8 8.5h8M8 12h5" fill="none" stroke="#171717" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            <div class="bp-card-title">Prompt mode</div>
+            <div class="bp-card-sub">Describe the goal the agent plans.</div>
+          </div>
+          <div class="bp-card">
+            <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="5.5" cy="6" r="2.5" fill="none" stroke="#171717" stroke-width="1.8"/>
+              <circle cx="18.5" cy="18" r="2.5" fill="none" stroke="#171717" stroke-width="1.8"/>
+              <path d="M8 6h7a3 3 0 0 1 3 3v6.5M5.5 8.5V15a3 3 0 0 0 3 3H16" fill="none" stroke="#171717" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            <div class="bp-card-title">Visual mode</div>
+            <div class="bp-card-sub">Build every step on a canvas.</div>
+          </div>
+        </div>
+      </div>
       <div class="ac-icon">
         <svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z M14 2v5h5 M9 13h6 M9 17h6" fill="none" stroke="rgba(26,26,26,0.4)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -377,6 +434,19 @@
   window.scrollTo(0, document.documentElement.scrollHeight);
   window.addEventListener('load', function () {
     window.scrollTo(0, document.documentElement.scrollHeight);
+  });
+
+  // Create Agent -> "Choose how to build" popover (Chat - new - clicked)
+  var artifactCard = document.getElementById('artifactCard');
+  document.getElementById('btnCreateAgent').addEventListener('click', function (e) {
+    e.stopPropagation();
+    artifactCard.classList.toggle('popover-open');
+  });
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('#buildPopover')) artifactCard.classList.remove('popover-open');
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') artifactCard.classList.remove('popover-open');
   });
 </script>
 </body>
