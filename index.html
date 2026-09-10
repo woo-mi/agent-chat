@@ -328,7 +328,7 @@
     inset: 0 0 0 48px;
     z-index: 260;
     display: none;
-    background: #FFFFFF;
+    background: #FAFAFA; /* frame bg — white cards sit on the gray page */
     overflow: hidden;
   }
   body.fs .fs-view { display: block; animation: overlayIn 0.2s ease; }
@@ -1038,11 +1038,13 @@
     var panelLeft = 664 + x / k; // mock coords; at x=0 this is the frame's 664
     var divider = x + panelLeft * k;
     var threadLeft = Math.max(-1, (divider - 677 * k) / 2 / k - x / k);
-    reportView.style.setProperty('--rv-scale', k);
-    reportView.style.setProperty('--rv-x', x + 'px');
-    reportView.style.setProperty('--rv-panel-left', panelLeft + 'px');
-    reportView.style.setProperty('--rv-thread-left', threadLeft + 'px');
-    reportView.style.setProperty('--rv-divider', divider + 'px');
+    // set on :root so both .report-view and the sibling .fs-view inherit
+    var root = document.documentElement.style;
+    root.setProperty('--rv-scale', k);
+    root.setProperty('--rv-x', x + 'px');
+    root.setProperty('--rv-panel-left', panelLeft + 'px');
+    root.setProperty('--rv-thread-left', threadLeft + 'px');
+    root.setProperty('--rv-divider', divider + 'px');
   }
   sizeReport();
   window.addEventListener('resize', sizeReport);
