@@ -270,24 +270,29 @@
     from { transform: translateX(0); }
     to { transform: translateX(calc(100% + 80px)); }
   }
-  /* The frame is a 1440x1000 mock with a 50/50 split; the 1392x952 content region
-     scales to FIT the window (contain, both dimensions — JS sets --rv-scale/--rv-x)
-     so the mock's exact crop and ratio hold at any window size. */
-  .rv-scale {
+  /* The panel fills the RIGHT HALF of the screen at any size (own scale --rv-kp);
+     the chat thread keeps the contain-fit ratio (--rv-kt), centered in the left
+     half. At 1440x1000 both scales are 1 and the frame is pixel-exact. */
+  .rv-left {
     position: absolute;
-    left: var(--rv-x, 0); top: 0;
-    width: 1392px; height: 952px;
+    left: var(--rvt-x, -1px); top: 0;
+    transform: scale(var(--rv-kt, 1));
     transform-origin: 0 0;
-    transform: scale(var(--rv-scale, 1));
   }
   .rv-thread {
     position: absolute;
-    left: var(--rv-thread-left, -1px); top: -2478px; /* frame: Landing Column at 47/-2430, viewport top bar 48; JS centers it in the white chat side */
+    left: 0; top: -2478px; /* frame: Landing Column at 47/-2430, viewport top bar 48 */
     width: 677px;
+  }
+  .rv-right {
+    position: absolute;
+    left: var(--rv-splitx, 664px); top: 0;
+    transform: scale(var(--rv-kp, 1));
+    transform-origin: 0 0;
   }
   .rv-panel {
     position: absolute;
-    left: var(--rv-panel-left, 664px); top: 0; /* frame: 664 = half the 1440 screen; JS shifts right by half the leftover width */
+    left: 0; top: 0;
     width: 728px; height: 952px;
   }
   .rv-panel img { display: block; width: 728px; height: 952px; }
@@ -762,8 +767,10 @@
 </div>
 
 <div class="report-view">
-  <div class="rv-scale">
-  <img class="rv-thread" src="report-left-thread.png" alt="Chat conversation (compressed)" width="677" height="3516" />
+  <div class="rv-left">
+    <img class="rv-thread" src="report-left-thread.png" alt="Chat conversation (compressed)" width="677" height="3516" />
+  </div>
+  <div class="rv-right">
   <div class="rv-panel">
     <img src="report-panel-open.png" alt="Live Apps Usage Momentum report" width="728" height="952" />
     <div class="rv-controls">
@@ -1033,18 +1040,21 @@
     var w = window.innerWidth - 48, h = window.innerHeight - 48;
     var k = Math.min(w / 1392, h / 952);
     var x = Math.max(0, (w - 1392 * k) / 2);
-    // dock the panel to the right edge (its baked border marks the split line),
-    // then center the chat thread in the white region that remains
-    var panelLeft = 664 + x / k; // mock coords; at x=0 this is the frame's 664
-    var divider = x + panelLeft * k;
-    var threadLeft = Math.max(-1, (divider - 677 * k) / 2 / k - x / k);
+    // split at the mock's proportion (712/1440 of the full screen ~ half): the
+    // panel scales to FILL the right half; the thread keeps the contain ratio,
+    // centered in the left half. Both scales are 1 at exactly 1440x1000.
+    var splitView = window.innerWidth * (712 / 1440) - 48;
+    var kp = (w - splitView) / 728;
+    var tx = Math.max(-1, (splitView - 677 * k) / 2);
     // set on :root so both .report-view and the sibling .fs-view inherit
     var root = document.documentElement.style;
     root.setProperty('--rv-scale', k);
     root.setProperty('--rv-x', x + 'px');
-    root.setProperty('--rv-panel-left', panelLeft + 'px');
-    root.setProperty('--rv-thread-left', threadLeft + 'px');
-    root.setProperty('--rv-divider', divider + 'px');
+    root.setProperty('--rv-kt', k);
+    root.setProperty('--rv-kp', kp);
+    root.setProperty('--rv-splitx', splitView + 'px');
+    root.setProperty('--rvt-x', tx + 'px');
+    root.setProperty('--rv-divider', splitView + 'px');
   }
   sizeReport();
   window.addEventListener('resize', sizeReport);
