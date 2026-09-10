@@ -258,14 +258,14 @@
   }
   body.report .report-view { display: block; animation: overlayIn 0.2s ease; }
   /* frame "Report slide in": the panel enters from the right edge */
-  body.report .rv-panel { animation: panelSlideIn 0.38s cubic-bezier(0.32, 0.72, 0.28, 1) both; }
+  body.report .rv-right { animation: panelSlideIn 0.38s cubic-bezier(0.32, 0.72, 0.28, 1) both; }
   @keyframes panelSlideIn {
     from { transform: translateX(calc(100% + 80px)); }
     to { transform: translateX(0); }
   }
   body.report.report-closing .report-view { animation: overlayOut 0.3s ease both; }
   @keyframes overlayOut { to { opacity: 0; } }
-  body.report.report-closing .rv-panel { animation: panelSlideOut 0.3s cubic-bezier(0.4, 0, 0.6, 1) both; }
+  body.report.report-closing .rv-right { animation: panelSlideOut 0.3s cubic-bezier(0.4, 0, 0.6, 1) both; }
   @keyframes panelSlideOut {
     from { transform: translateX(0); }
     to { transform: translateX(calc(100% + 80px)); }
@@ -286,19 +286,23 @@
   }
   .rv-right {
     position: absolute;
-    left: var(--rv-splitx, 664px); top: 0;
-    transform: scale(var(--rv-kp, 1));
-    transform-origin: 0 0;
+    left: var(--rv-splitx, 664px); top: 0; right: 0; bottom: 0;
+    background: #FAFAFA;
+    border-left: 0.5px solid rgba(31, 30, 29, 0.3);
+    overflow-y: auto;
+    overflow-x: hidden;
   }
   .rv-panel {
-    position: absolute;
-    left: 0; top: 0;
-    width: 728px; height: 952px;
+    position: relative;
+    width: calc(var(--rv-kt, 1) * 727px);
+    margin: 0 auto;
   }
-  .rv-panel img { display: block; width: 728px; height: 952px; }
+  .rv-panel img { display: block; width: 100%; height: auto; }
   .rv-controls {
     position: absolute;
-    left: 487px; top: 18px;
+    left: calc(var(--rv-kt, 1) * 487px); top: calc(var(--rv-kt, 1) * 18px);
+    transform: scale(var(--rv-kt, 1));
+    transform-origin: 0 0;
     display: flex; align-items: center;
     gap: 8px;
     padding: 4px;
@@ -772,7 +776,7 @@
   </div>
   <div class="rv-right">
   <div class="rv-panel">
-    <img src="report-panel-open.png" alt="Live Apps Usage Momentum report" width="728" height="952" />
+    <img src="report-panel-full.png" alt="Live Apps Usage Momentum report" width="727" height="4752" />
     <div class="rv-controls">
       <button class="rv-create-agent">
         <svg width="18" height="18" viewBox="0 0.8 28.8 28.8" xmlns="http://www.w3.org/2000/svg">
@@ -1044,14 +1048,12 @@
     // panel scales to FILL the right half; the thread keeps the contain ratio,
     // centered in the left half. Both scales are 1 at exactly 1440x1000.
     var splitView = window.innerWidth * (712 / 1440) - 48;
-    var kp = (w - splitView) / 728;
     var tx = Math.max(-1, (splitView - 677 * k) / 2);
     // set on :root so both .report-view and the sibling .fs-view inherit
     var root = document.documentElement.style;
     root.setProperty('--rv-scale', k);
     root.setProperty('--rv-x', x + 'px');
     root.setProperty('--rv-kt', k);
-    root.setProperty('--rv-kp', kp);
     root.setProperty('--rv-splitx', splitView + 'px');
     root.setProperty('--rvt-x', tx + 'px');
     root.setProperty('--rv-divider', splitView + 'px');
