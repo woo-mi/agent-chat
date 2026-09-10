@@ -237,6 +237,242 @@
     border-radius: 50%;
     background: rgba(236, 238, 244, 0.6);
   }
+
+  /* ---------- Text Agent screen (ported verbatim from agent-list-view) ---------- */
+  @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+  /* ---------- Text Agent screen (created agent page) ---------- */
+  .agent-view {
+    position: fixed;
+    inset: 0 0 0 48px;
+    z-index: 300;
+    display: none;
+    background: #FFFFFF;
+  }
+  body.agent .agent-view { display: block; animation: overlayIn 0.2s ease; }
+  .agent-topbar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 12px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E6E6E6;
+  }
+  .btn-update-agent {
+    height: 32px;
+    padding: 4px 12px;
+    border-radius: 8px;
+    border: none;
+    background: #171717;
+    font-family: system-ui, sans-serif;
+    font-size: 14px; font-weight: 500; line-height: 18px;
+    color: #FFFFFF;
+    opacity: 0.4;
+    cursor: default;
+  }
+  .agent-left {
+    position: absolute;
+    top: 48px; left: 0; bottom: 0;
+    width: 440px;
+    background: #FFFFFF;
+    border-right: 1px solid #D4D4D4;
+  }
+  .agent-seg {
+    position: absolute;
+    top: 18px; left: 18px;
+    width: 403px;
+    display: flex;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 10px;
+    background: #F4F5F7;
+  }
+  .agent-composer {
+    position: absolute;
+    left: 18px; bottom: 18px;
+    width: 404px; height: 120px;
+  }
+  .agent-composer-ring {
+    position: absolute;
+    inset: -1px 0;
+    border-radius: 25px;
+    opacity: 0.55;
+    background: #D4D4D4;
+  }
+  .agent-composer-card {
+    position: relative;
+    width: 402px; height: 120px;
+    margin: 0 auto;
+    display: flex; flex-direction: column;
+    gap: 14px;
+    padding: 18px 12px 12px;
+    border-radius: 24px;
+    background: #FFFFFF;
+    box-shadow: 0 1px 10px rgba(15, 17, 40, 0.06);
+  }
+  .agent-composer-placeholder {
+    flex: 1;
+    padding: 0 8px;
+    font-size: 14px; font-weight: 500; line-height: 26px;
+    color: #8C8F96;
+  }
+  .agent-composer-controls { display: flex; align-items: center; justify-content: space-between; }
+  .agent-composer-controls .left, .agent-composer-controls .right { display: flex; align-items: center; }
+  .agent-composer-controls .right { gap: 4px; }
+  .mini-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+  .mini-chip {
+    height: 24px;
+    display: flex; align-items: center;
+    gap: 6px;
+    padding: 0 12px;
+    border-radius: 17px;
+    font-size: 13px; font-weight: 500; line-height: 18px;
+    color: #4A4D53;
+  }
+  .mini-send { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #EAEBEE; }
+  .agent-main {
+    position: absolute;
+    top: 48px; left: 440px; right: 0; bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .agent-toggle {
+    position: sticky;
+    top: 18px;
+    margin: 18px auto 0;
+    width: 206px;
+    display: flex;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 10px;
+    background: #F4F5F7;
+    z-index: 5;
+  }
+  .agent-toggle .seg-item { width: 99px; flex: none; }
+  .agent-edit {
+    width: 832px;
+    margin: 30px auto 60px;
+  }
+  .agent-edit .modal-section { border-bottom: 1px solid #E6E6E6; }
+  .agent-edit .modal-section:last-child { border-bottom: none; }
+  .agent-outcome {
+    width: 874px;
+    margin: 12px auto 60px;
+  }
+  .agent-outcome img { display: block; width: 100%; height: auto; }
+  .agent-view:not(.outcome) .agent-outcome { display: none; }
+  .agent-view.outcome .agent-edit { display: none; }
+
+  /* Visual Agent state (frame "Visual Agent") */
+  .agent-visual-canvas {
+    display: none;
+    height: 395px;
+    margin: 188px 0 60px 58px;
+  }
+  .agent-visual-img {
+    width: 1070px; height: 395px;
+    background-image: url(visual-canvas.png);
+    background-size: 106.277%;
+    background-position: 54.167% 23.867%;
+    background-repeat: no-repeat;
+  }
+  .agent-view.visual:not(.outcome) .agent-visual-canvas { display: block; }
+  .agent-view.visual:not(.outcome) .agent-edit { display: none; }
+  .agent-view.visual:not(.outcome) .agent-main { background: #F4F5F7; }
+  .agent-view.visual .btn-update-agent { opacity: 1; cursor: pointer; }
+  .agent-view.visual .btn-update-agent:hover { background: #000000; }
+
+  .seg-item {
+    flex: 1 1 0;
+    display: flex; align-items: center; justify-content: center;
+    gap: 7px;
+    min-height: 32px;
+    border-radius: 7px;
+    font-family: system-ui, sans-serif;
+    font-size: 12px; font-weight: 500; line-height: 16px;
+    color: #303030;
+    background: none; border: none;
+  }
+  .seg-item.active {
+    font-weight: 600;
+    background: #FFFFFF;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 0 0 1px #D7D7D7;
+  }
+  .modal-sections {
+    position: absolute;
+    left: 45px; top: 207px;
+    width: 1092px;
+    display: flex; flex-direction: column;
+    gap: 12px;
+    padding: 6px 20px;
+    border: 1px solid #D4D4D4;
+    border-radius: 8px;
+  }
+  .modal-section { border-bottom: 1px solid #E6E6E6; }
+  .modal-section:last-child { border-bottom: none; }
+  .section-row {
+    display: flex; align-items: center;
+    min-height: 58px;
+    padding: 8px 4px;
+    gap: 14px;
+  }
+  .section-label {
+    width: 130px;
+    flex-shrink: 0;
+    font-size: 13px; font-weight: 600; line-height: 16px;
+    color: #666666;
+  }
+  .section-value {
+    flex: 1;
+    font-size: 14px; font-weight: 500; line-height: 18px;
+    color: #171717;
+  }
+  .section-chevron {
+    width: 20px;
+    flex-shrink: 0;
+    display: flex; justify-content: center;
+  }
+  .delivery-detail {
+    display: flex; flex-direction: column;
+    gap: 12px;
+    padding: 4px 4px 18px 148px;
+  }
+  .delivery-selects { display: flex; align-items: center; gap: 10px; }
+  .mock-select {
+    display: flex; align-items: center; justify-content: space-between;
+    min-height: 34px;
+    gap: 8px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid #D4D4D4;
+    background: #FFFFFF;
+    font-size: 13px; line-height: 16px;
+    color: #171717;
+    flex-shrink: 0;
+  }
+  .checkbox-row {
+    display: flex; align-items: center;
+    gap: 8px;
+    font-size: 13px; line-height: 16px;
+    color: #171717;
+  }
+  .mock-checkbox {
+    width: 16px; height: 16px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    border: 1px solid #C9C9C9;
+    background: #FFFFFF;
+  }
+  .report-crumb { display: flex; align-items: center; gap: 8px; }
+  .report-back {
+    display: flex; align-items: center;
+    gap: 10px;
+    background: none; border: none;
+    font-family: system-ui, sans-serif;
+    font-size: 14px; line-height: 20px;
+    color: #171717;
+  }
+  .report-back:hover svg { stroke-opacity: 0.7; }
 </style>
 </head>
 <body>
@@ -346,7 +582,7 @@
       <div class="build-popover" id="buildPopover">
         <div class="bp-title">Choose how to build</div>
         <div class="bp-cards">
-          <div class="bp-card selected">
+          <div class="bp-card selected" id="promptModeCard">
             <svg width="18" height="18" viewBox="0 0 15.429 15.429" xmlns="http://www.w3.org/2000/svg">
               <path d="M13.5 9.641a1.286 1.286 0 0 1-1.286 1.286H4.5l-2.571 2.571V3.213a1.286 1.286 0 0 1 1.285-1.286h9a1.286 1.286 0 0 1 1.286 1.286z" fill="none" stroke="#171717" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M4.5 5.141h6.429" fill="none" stroke="#171717" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -395,6 +631,145 @@
           Open Report
         </button>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="agent-view">
+  <div class="agent-topbar">
+    <div class="report-crumb">
+      <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <rect x="1" y="1.5" width="14" height="13" rx="2.5" fill="none" stroke="#666666"/>
+        <path d="M5.6 1.5 L5.6 14.5" fill="none" stroke="#666666"/>
+      </svg>
+      <button id="agentBack" class="report-back">
+        <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.9 3.2 L5.3 8 L9.9 12.8" fill="none" stroke="#171717" stroke-width="1.33" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span id="agentCrumb">Agents / KPI Watcher</span>
+      </button>
+    </div>
+    <button class="btn-update-agent">Update agent</button>
+  </div>
+
+  <div class="agent-left">
+    <div class="agent-seg">
+      <button id="agentSegText" class="seg-item active">
+        <svg width="15" height="15" viewBox="0 0 12.857 12.857" xmlns="http://www.w3.org/2000/svg">
+          <path d="M11.25 8.035a1.071 1.071 0 0 1-1.071 1.072H3.75l-2.143 2.143V2.678a1.071 1.071 0 0 1 1.072-1.071h7.5a1.071 1.071 0 0 1 1.071 1.071z" fill="none" stroke="#4D4D4D" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3.75 4.285h5.357M3.75 6.428h3.214" fill="none" stroke="#4D4D4D" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Text mode
+      </button>
+      <button id="agentSegVisual" class="seg-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15">
+          <rect width="5" height="5" x="1.875" y="1.875" rx="2" fill="none" stroke="#4D4D4D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4.375 6.875v2.5a1.25 1.25 0 0 0 1.25 1.25h2.5" fill="none" stroke="#4D4D4D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect width="5" height="5" x="8.125" y="8.125" rx="2" fill="none" stroke="#4D4D4D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Visual mode
+      </button>
+    </div>
+    <div class="agent-composer">
+      <div class="agent-composer-ring"></div>
+      <div class="agent-composer-card">
+        <div class="agent-composer-placeholder">Ask Wisdom about your data</div>
+        <div class="agent-composer-controls">
+          <div class="left">
+            <span class="mini-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" fill="none" stroke="#4A4B5C" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span>
+            <span class="mini-chip">Auto
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" fill="none" stroke="#8A8B9C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="mini-chip">Thinking
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" fill="none" stroke="#8A8B9C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </div>
+          <div class="right">
+            <span class="mini-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="13" rx="3" fill="none" stroke="#4A4B5C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3" fill="none" stroke="#4A4B5C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="mini-send">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="#A6A8B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="agent-main">
+    <div class="agent-toggle">
+      <button id="tabOutcome" class="seg-item">
+        <svg width="15" height="15" viewBox="12 0 15 15" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20.624 1.5C20.803 1.5 20.979 1.535 21.143 1.604C21.308 1.672 21.458 1.772 21.583 1.898L23.601 3.915C23.728 4.042 23.828 4.191 23.897 4.355C23.965 4.52 24.001 4.696 24 4.875M20.624 1.5L16.124 1.5C15.827 1.5 15.54 1.619 15.329 1.83C15.118 2.041 15 2.327 15 2.625L15 12.375C15 12.673 15.118 12.959 15.329 13.17C15.54 13.381 15.827 13.5 16.124 13.5L22.875 13.5C23.174 13.5 23.46 13.381 23.671 13.17C23.882 12.959 24 12.673 24 12.375L24 4.875M20.624 1.5L20.624 4.313C20.624 4.461 20.684 4.605 20.79 4.71C20.895 4.816 21.038 4.875 21.188 4.875L24 4.875M17.249 10.499L17.249 9.937M19.5 10.499L19.5 7.125M21.75 10.499L21.75 8.813" fill="none" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Outcome
+      </button>
+      <button id="tabEdit" class="seg-item active">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15">
+          <path d="M13.234 4.258a0.625 0.625 0 0 0-2.491-2.492L2.401 10.109a1.25 1.25 0 0 0-0.312 0.519l-0.826 2.72a0.313 0.313 0 0 0 0.39 0.388l2.72-0.825a1.25 1.25 0 0 0 0.519-0.31z" fill="none" stroke="#4D4D4D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9.375 3.125l2.5 2.5" fill="none" stroke="#4D4D4D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Edit
+      </button>
+    </div>
+
+    <div class="agent-edit">
+      <div class="modal-section">
+        <div class="section-row">
+          <div class="section-label">Instructions</div>
+          <div id="agentInstr" class="section-value">Review HubSpot KPIs vs 4-week trend; flag &gt; threshold moves&hellip;</div>
+          <div class="section-chevron"><svg width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 18l6-6-6-6" fill="none" stroke="#A8A8A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="section-row">
+          <div class="section-label">Trigger</div>
+          <div id="agentTrigger" class="section-value">Schedule &middot; Weekdays at 9:00 AM (America/Los_Angeles)</div>
+          <div class="section-chevron"><svg width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 18l6-6-6-6" fill="none" stroke="#A8A8A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="section-row">
+          <div class="section-label">Parameters</div>
+          <div class="section-value">4 defined &middot; 3 asked on manual runs</div>
+          <div class="section-chevron"><svg width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 18l6-6-6-6" fill="none" stroke="#A8A8A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="section-row">
+          <div class="section-label">Delivery</div>
+          <div class="section-value">Slack &middot; #revops-daily</div>
+          <div class="section-chevron"><svg width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 18l6-6-6-6" fill="none" stroke="#A8A8A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="delivery-detail">
+          <div class="delivery-selects">
+            <div class="mock-select" style="width: 160px;">Slack
+              <svg width="10" height="10" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="#666666" stroke-width="1.4" stroke-linecap="round"/></svg>
+            </div>
+            <div class="mock-select" style="width: 220px;">#revops-daily
+              <svg width="10" height="10" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="#666666" stroke-width="1.4" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+          <div class="checkbox-row"><div class="mock-checkbox"></div>Also email me a copy</div>
+          <div class="checkbox-row"><div class="mock-checkbox"></div>Attach result tables as CSV</div>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="section-row">
+          <div class="section-label">Advanced</div>
+          <div class="section-value">Model, retries, permissions &mdash; defaults</div>
+          <div class="section-chevron"><svg width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 18l6-6-6-6" fill="none" stroke="#A8A8A8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-visual-canvas"><div class="agent-visual-img"></div></div>
+
+    <div class="agent-outcome">
+      <img src="report-content-v2.png" alt="Daily KPI watcher report outcome" width="874" height="4834" />
     </div>
   </div>
 </div>
@@ -448,11 +823,52 @@
     artifactCard.classList.toggle('popover-open');
   });
   document.addEventListener('click', function (e) {
+    if (document.body.classList.contains('agent')) return;
+    if (e.target.closest('.agent-view')) return;
     if (!e.target.closest('#buildPopover')) artifactCard.classList.remove('popover-open');
   });
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') artifactCard.classList.remove('popover-open');
+    if (e.key !== 'Escape') return;
+    if (document.body.classList.contains('agent')) { closeAgentView(); return; }
+    artifactCard.classList.remove('popover-open');
   });
+
+  // Prompt mode -> Text Agent screen on the Outcome tab (same screen as the other flows);
+  // the popover stays open beneath so back returns to it.
+  var agentView = document.querySelector('.agent-view');
+  var agentMain = document.querySelector('.agent-main');
+  var tabOutcome = document.getElementById('tabOutcome');
+  var tabEdit = document.getElementById('tabEdit');
+  function setAgentTab(tab) {
+    var outcome = tab === 'outcome';
+    agentView.classList.toggle('outcome', outcome);
+    tabOutcome.classList.toggle('active', outcome);
+    tabEdit.classList.toggle('active', !outcome);
+    agentMain.scrollTop = 0;
+  }
+  function setAgentMode(mode) {
+    var visual = mode === 'visual';
+    agentView.classList.toggle('visual', visual);
+    document.getElementById('agentSegVisual').classList.toggle('active', visual);
+    document.getElementById('agentSegText').classList.toggle('active', !visual);
+    agentMain.scrollTop = 0;
+  }
+  function openAgentView() {
+    document.getElementById('agentCrumb').textContent = 'Agents / Live Apps Usage Momentum';
+    document.getElementById('agentInstr').textContent = 'Review Live Apps usage momentum vs 4-week trend; flag > threshold moves…';
+    document.getElementById('agentTrigger').textContent = 'Schedule · Weekdays at 9:00 AM (America/Los_Angeles)';
+    setAgentTab('outcome');
+    setAgentMode('text');
+    document.body.classList.add('agent');
+  }
+  function closeAgentView() { document.body.classList.remove('agent'); }
+
+  tabOutcome.addEventListener('click', function () { setAgentTab('outcome'); });
+  tabEdit.addEventListener('click', function () { setAgentTab('edit'); });
+  document.getElementById('agentSegText').addEventListener('click', function () { setAgentMode('text'); });
+  document.getElementById('agentSegVisual').addEventListener('click', function () { setAgentMode('visual'); });
+  document.getElementById('agentBack').addEventListener('click', closeAgentView);
+  document.getElementById('promptModeCard').addEventListener('click', openAgentView);
 </script>
 </body>
 </html>
