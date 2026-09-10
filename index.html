@@ -248,11 +248,12 @@
     overflow: hidden;
   }
   body.report .report-view { display: block; animation: overlayIn 0.2s ease; }
-  /* The frame is a 50/50 split at 1440; the whole 1392x952 content region scales
-     with the window width (JS sets --rv-scale) so the mock's proportions hold. */
+  /* The frame is a 1440x1000 mock with a 50/50 split; the 1392x952 content region
+     scales to FIT the window (contain, both dimensions — JS sets --rv-scale/--rv-x)
+     so the mock's exact crop and ratio hold at any window size. */
   .rv-scale {
     position: absolute;
-    left: 0; top: 0;
+    left: var(--rv-x, 0); top: 0;
     width: 1392px; height: 952px;
     transform-origin: 0 0;
     transform: scale(var(--rv-scale, 1));
@@ -931,7 +932,10 @@
   // region to the window so the mock's half-and-half proportions hold.
   var reportView = document.querySelector('.report-view');
   function sizeReport() {
-    reportView.style.setProperty('--rv-scale', (window.innerWidth - 48) / 1392);
+    var w = window.innerWidth - 48, h = window.innerHeight - 48;
+    var k = Math.min(w / 1392, h / 952);
+    reportView.style.setProperty('--rv-scale', k);
+    reportView.style.setProperty('--rv-x', Math.max(0, (w - 1392 * k) / 2) + 'px');
   }
   sizeReport();
   window.addEventListener('resize', sizeReport);
