@@ -250,7 +250,10 @@
   body.report .report-view { display: block; animation: overlayIn 0.2s ease; }
   .rv-thread {
     position: absolute;
-    left: -1px; top: -2478px; /* frame: Landing Column at 47/-2430, viewport top bar 48 */
+    /* center in the space left of the 728px panel; max() clamps to the frame's
+       exact -1px at 1440 and narrower so the 1440 crop stays pixel-true */
+    left: max(-1px, calc(50% - 702.5px));
+    top: -2478px; /* frame: Landing Column at 47/-2430, viewport top bar 48 */
     width: 677px;
   }
   .rv-panel {
